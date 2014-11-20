@@ -4,14 +4,14 @@
 # at boot time, one per line. Lines beginning with "#" are ignored.
 
 #For SATA Support
-sw_ahci_platform
+#sw_ahci_platform
 
 #Display and GPU
-lcd
-hdmi
+#lcd
+#hdmi
 ump
-disp
+#disp
 mali
 mali_drm
-8192cu
+
 

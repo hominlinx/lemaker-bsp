@@ -1,11 +1,14 @@
-sunxi-bsp
+lemaker-bsp
 =========
 
 Getting Started
 ---------------
 
-1. Choose a board doing `./configure my_board`, or `./configure` to see
-   the list of supported ones.
+1. Choose a board doing:
+   For Banana Pro:
+   `./configure BananaPro`,
+   For Banana Pi:
+   `./configure BananaPi`.
 
 2. Run 'make' to build hwpack or 'make help' to list available targets
 
