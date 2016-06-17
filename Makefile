@@ -1,11 +1,12 @@
 .PHONY: all clean help
-.PHONY: tools u-boot linux libs hwpack hwpack-install
+.PHONY: tools u-boot busybox linux libs hwpack hwpack-install
 .PHONY: linux-config livesuit android
 
 SUDO=sudo
 CROSS_COMPILE=arm-linux-gnueabihf-
 OUTPUT_DIR=$(CURDIR)/output
 BUILD_PATH=$(CURDIR)/build
+ROOTFSDIR=$(CURDIR)/rootfs
 ROOTFS?=norootfs
 ROOTFS_BASENAME=$(basename $(basename $(ROOTFS)))
 Q=
@@ -16,6 +17,8 @@ include chosen_board.mk
 HWPACK=$(OUTPUT_DIR)/$(BOARD)_hwpack.tar.xz
 U_O_PATH=$(BUILD_PATH)/$(UBOOT_CONFIG)-u-boot
 K_O_PATH=$(BUILD_PATH)/$(KERNEL_CONFIG)-linux
+B_O_PATH=$(BUILD_PATH)/$(BUSYBOX_CONFIG)-busybox
+B_DOT_CONFIG=$(B_O_PATH)/.config
 U_CONFIG_H=$(U_O_PATH)/include/config.h
 K_DOT_CONFIG=$(K_O_PATH)/.config
 
@@ -36,6 +39,12 @@ $(U_CONFIG_H): u-boot-sunxi/.git
 
 u-boot: $(U_CONFIG_H)
 	$(Q)$(MAKE) -C u-boot-sunxi all O=$(U_O_PATH) CROSS_COMPILE=$(CROSS_COMPILE) -j$J
+## busybox
+busybox-config: busybox/.git
+	$(Q)$(MAKE) -C busybox O=$(B_O_PATH) CROSS_COMPILE=$(CROSS_COMPILE) menuconfig
+busybox:
+	$(Q)$(MAKE) -C busybox O=$(B_O_PATH) CROSS_COMPILE=$(CROSS_COMPILE) -j$J
+	$(Q)$(MAKE) -C busybox O=$(B_O_PATH) CROSS_COMPILE=$(CROSS_COMPILE) install CONFIG_PREFIX=$(ROOTFSDIR)
 
 ## linux
 $(K_DOT_CONFIG): linux-sunxi/.git
@@ -57,6 +66,7 @@ endif
 
 linux-config: $(K_DOT_CONFIG)
 	$(Q)$(MAKE) -C linux-sunxi O=$(K_O_PATH) ARCH=arm menuconfig
+
 
 ## script.bin
 script.bin: tools
@@ -88,9 +98,11 @@ android-%:
 android: android-build
 
 ## hwpack-install
-hwpack-install: $(HWPACK)
-	$(Q)[ -s $(SD_CARD) ] || echo "Define SD_CARD variable"
-	$(Q)$(SUDO) scripts/sunxi-media-create.sh $(SD_CARD) $(HWPACK) $(ROOTFS)
+#hwpack-install: $(HWPACK)
+hwpack-install:
+	#$(Q)[ -s $(SD_CARD) ] || echo "Define SD_CARD variable"
+	#$(Q)$(SUDO) scripts/sunxi-media-create.sh $(SD_CARD) $(HWPACK) $(ROOTFS)
+	$(Q)$(SUDO) scripts/burn.sh
 
 libs: cedarx-libs/.git
 

@@ -25,6 +25,7 @@ generate_board_mk() {
 	ANDROID=$android
 	SOC=$soc
 	UBOOT_CONFIG=$board
+    BUSYBOX_CONFIG=$board
 	EOT
 
 	case "$soc" in

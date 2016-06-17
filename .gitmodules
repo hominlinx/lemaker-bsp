@@ -16,3 +16,6 @@
 [submodule "cedarx-libs"]
 	path = cedarx-libs
 	url = ../cedarx-libs.git
+[submodule "busybox"]
+	path = busybox
+	url = git://busybox.net/busybox.git

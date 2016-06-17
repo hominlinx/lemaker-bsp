@@ -24,12 +24,14 @@ cp_debian_files() {
 	local x= y=
 
 	echo "Debian/Ubuntu hwpack"
-	cp -r "rootfs/debian-ubuntu"/* "$rootfs/"
+	#cp -r "rootfs/debian-ubuntu"/* "$rootfs/"
+	cp -r "rootfs"/* "$rootfs/"
 
 	## libs
 	install -m 0755 $(find "$cedarxdir" -name '*.so') "$rootfs/lib/"
 
 	## kernel modules
+    echo "=========="$K_O_PATH, $rootfs
 	cp -r "$K_O_PATH/output/lib/modules" "$rootfs/lib/"
 	rm -f "$rootfs/lib/modules"/*/source
 	rm -f "$rootfs/lib/modules"/*/build
